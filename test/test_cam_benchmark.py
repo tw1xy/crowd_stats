@@ -53,6 +53,7 @@ def predict(image, graph):
 	(output, _) = graph.GetResult()
 	time_consumed_load_and_get = (time.clock() - start)
 
+	start = time.clock()
 	# grab the number of valid object predictions from the output,
 	# then initialize the list of predictions
 	num_valid_boxes = output[0]
@@ -94,8 +95,10 @@ def predict(image, graph):
 		prediction = (pred_class, pred_conf, pred_boxpts)
 		predictions.append(prediction)
 
+		time_consumed_rest = (time.clock() - start)
+
 	# return the list of predictions to the calling function
-	return predictions, time_consumed_proc, time_consumed_load_and_get
+	return predictions, time_consumed_proc, time_consumed_load_and_get, time_consumed_rest
 
 # grab a list of all NCS devices plugged in to USB
 print("[INFO] finding NCS devices...")
@@ -213,7 +216,7 @@ if mode == "image":
 
 		start = time.clock()
 		# use the NCS to acquire predictions
-		predictions, time_consumed_proc, time_consumed_load_and_get = predict(frame, graph)
+		predictions, time_consumed_proc, time_consumed_load_and_get, time_consumed_rest = predict(frame, graph)
 
 		time_consumed_pred= (time.clock() - start)
 		
@@ -255,7 +258,13 @@ if mode == "image":
 
 		time_consumed_draw= (time.clock() - start)
 		
-		print("Image: {} prediction: {} drawing: {} proc: {} load_get: {}".format(filename,time_consumed_pred,time_consumed_draw, time_consumed_proc, time_consumed_load_and_get))
+		print("Image: {} prediction: {} = proc: {} + load_get: {} + rest: {} = {}; drawing: {}".format(filename,time_consumed_pred, 
+			time_consumed_proc, time_consumed_load_and_get, time_consumed_rest,time_consumed_proc+time_consumed_load_and_get+time_consumed_rest,time_consumed_draw))
+
+		print("Image: {} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {}\n".format(filename,
+			(time_consumed_pred/time_consumed_pred)*100, 
+			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
+
 
 		key = cv2.waitKey(1) & 0xFF
 		if key == ord("q"):
