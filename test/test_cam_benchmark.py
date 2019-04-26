@@ -138,6 +138,7 @@ if mode == "cam":
 	cap = cv2.VideoCapture(0)
 	while True:
 		try:
+			first_start = time.clock()
 			#for video stream
 			ret, frame = cap.read()
 			image_for_result = frame.copy()
@@ -185,11 +186,13 @@ if mode == "cam":
 						cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 
 			time_consumed_draw= (time.clock() - start)
+			time_consumed_overall= (time.clock() - first_start)
 
-			print("prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(time_consumed_pred, 
+
+			print("A: {:0.3f} prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(time_consumed_overall,time_consumed_pred, 
 			time_consumed_proc, time_consumed_load_and_get, time_consumed_rest,time_consumed_proc+time_consumed_load_and_get+time_consumed_rest,time_consumed_draw))
 
-			print("prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format((time_consumed_pred/time_consumed_pred)*100, 
+			print("A: {:0.3f} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format(time_consumed_overall,(time_consumed_pred/time_consumed_pred)*100, 
 			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,
 			((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
 
@@ -213,6 +216,7 @@ if mode == "cam":
 
 if mode == "image":
 	for filename in os.listdir(directory):
+		first_start = time.clock()
 		cap = cv2.imread(os.path.join(directory, filename))	
 
 		frame = cap
@@ -262,11 +266,12 @@ if mode == "image":
 					cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 
 		time_consumed_draw= (time.clock() - start)
-		
-		print("Image: {} prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(filename,time_consumed_pred, 
+		time_consumed_overall= (time.clock() - first_start)
+
+		print("Image: {} A: {:0.3f} prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(filename,time_consumed_overall,time_consumed_pred, 
 			time_consumed_proc, time_consumed_load_and_get, time_consumed_rest,time_consumed_proc+time_consumed_load_and_get+time_consumed_rest,time_consumed_draw))
 
-		print("Image: {} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format(filename,
+		print("Image: {} A: {:0.3f} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format(filename, time_consumed_overall,
 			(time_consumed_pred/time_consumed_pred)*100, 
 			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,
 			((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
