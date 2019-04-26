@@ -6,6 +6,13 @@ import argparse
 import numpy as np
 import time
 import cv2
+import os
+#mode of operating -> "image" for test images/ "cam" for video 
+mode = "image"
+#mode = "cam"
+
+#directory with images
+directory = ("images")
 
 #import labels for prediction boxes 
 CLASSES = ("background", "aeroplane", "bicycle", "bird",
@@ -16,7 +23,7 @@ COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 # frame dimensions should be sqaure
 PREPROCESS_DIMS = (300, 300)
-DISPLAY_DIMS = (900, 900)
+DISPLAY_DIMS = (600, 600)
 
 # calculate the multiplier needed to scale the bounding boxes
 DISP_MULTIPLIER = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
@@ -112,21 +119,89 @@ print("[INFO] allocating the graph on the NCS...")
 graph = device.AllocateGraph(graph_in_memory)
 
 print("[INFO] starting the video stream and FPS counter...")
-#cap = cv2.VideoCapture(0)
+
 #load an image to test -> to-do: make to pass an image as argument to program
-cap = cv2.imread("img1.jpg")
+
 
 time.sleep(1)
-#fps = FPS().start()
+fps = FPS().start()
 fimt = []
-while True:
-	try:
-		start = time.clock()
-			
-			#for video stream
-		#ret, frame = cap.read()
 
-		#for single image2
+if mode == "cam":
+	cap = cv2.VideoCapture(0)
+	while True:
+		try:
+			#for video stream
+			ret, frame = cap.read()
+			image_for_result = frame.copy()
+			image_for_result = cv2.resize(image_for_result, DISPLAY_DIMS)
+
+			start = time.clock()
+			# use the NCS to acquire predictions
+			predictions = predict(frame, graph)
+
+			# loop over our predictions
+			for (i, pred) in enumerate(predictions):
+				# extract prediction data for readability
+				(pred_class, pred_conf, pred_boxpts) = pred
+
+				# filter out weak detections by ensuring the `confidence`
+				# is greater than the minimum confidence
+				if pred_conf > 0.5:
+					# print prediction to terminal
+					
+					#print("[INFO] Prediction #{}: class={}, confidence={}, "
+					#	"boxpoints={}".format(i, CLASSES[pred_class], pred_conf,
+					#	pred_boxpts))
+
+					# check if we should show the prediction data
+					# on the frame
+					# build a label consisting of the predicted class and
+					# associated probability
+					label = "{}: {:.2f}%".format(CLASSES[pred_class],
+						pred_conf * 100)
+
+					# extract information from the prediction boxpoints
+					(ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
+					ptA = (ptA[0] * DISP_MULTIPLIER, ptA[1] * DISP_MULTIPLIER)
+					ptB = (ptB[0] * DISP_MULTIPLIER, ptB[1] * DISP_MULTIPLIER)
+					(startX, startY) = (ptA[0], ptA[1])
+					y = startY - 15 if startY - 15 > 15 else startY + 15
+					
+					# display the rectangle and label text
+					cv2.rectangle(image_for_result, ptA, ptB,
+						COLORS[pred_class], 2)
+					cv2.putText(image_for_result, label, (startX, y),
+						cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
+
+			fim= (time.clock() - start)
+			print(1/fim)
+
+
+			key = cv2.waitKey(1) & 0xFF
+			if key == ord("q"):
+
+					break
+
+			cv2.imshow("Output", image_for_result)
+			#cv2.imwrite("cam/{}_{}.jpg".format(filename,"saved"),image_for_result)	
+
+			fps.update()
+
+		except Exception as e:
+			raise
+		else:
+			pass
+		finally:
+			pass
+
+
+if mode == "image":
+	for filename in os.listdir(directory):
+		cap = cv2.imread(os.path.join(directory, filename))	
+		
+		print(filename) #print name of file
+
 		frame = cap
 		image_for_result = frame.copy()
 		image_for_result = cv2.resize(image_for_result, DISPLAY_DIMS)
@@ -135,6 +210,10 @@ while True:
 		# use the NCS to acquire predictions
 		predictions = predict(frame, graph)
 
+		time_consumed_pred= (time.clock() - start)
+		
+
+		start = time.clock()
 		# loop over our predictions
 		for (i, pred) in enumerate(predictions):
 			# extract prediction data for readability
@@ -169,11 +248,9 @@ while True:
 				cv2.putText(image_for_result, label, (startX, y),
 					cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 
-		fim= (time.clock() - start)
-		#print(fim)
-
-		fimt.append(fim)
-		print(1/np.mean(fimt))
+		time_consumed_draw= (time.clock() - start)
+		
+		print("Time of prediction is {}, time for drawing boxes is {}".format(time_consumed_pred,time_consumed_draw))
 
 		key = cv2.waitKey(1) & 0xFF
 		if key == ord("q"):
@@ -181,16 +258,10 @@ while True:
 				break
 
 		#cv2.imshow("Output", image_for_result)
-		#cv2.imwrite("img1Saved.jpg",image_for_result)	
+		#cv2.imwrite("images/{}_{}.jpg".format(filename,"saved"),image_for_result)	
 
 		#fps.update()
 
 
-		
-	except Exception as e:
-		raise
-	else:
-		pass
-	finally:
-		pass
+
 
