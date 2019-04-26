@@ -145,7 +145,7 @@ if mode == "cam":
 
 			start = time.clock()
 			# use the NCS to acquire predictions
-			predictions, time_consumed_proc = predict(frame, graph)
+			predictions, time_consumed_proc, time_consumed_load_and_get, time_consumed_rest = predict(frame, graph)
 
 			time_consumed_pred= (time.clock() - start)
 
@@ -186,18 +186,23 @@ if mode == "cam":
 
 			time_consumed_draw= (time.clock() - start)
 
-			print("Image: {} prediction: {} drawing: {}".format(filename,time_consumed_pred,time_consumed_draw))
+			print("prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(time_consumed_pred, 
+			time_consumed_proc, time_consumed_load_and_get, time_consumed_rest,time_consumed_proc+time_consumed_load_and_get+time_consumed_rest,time_consumed_draw))
+
+			print("prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format((time_consumed_pred/time_consumed_pred)*100, 
+			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,
+			((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
 
 			key = cv2.waitKey(1) & 0xFF
 			if key == ord("q"):
 
 					break
 
-			cv2.imshow("Output", image_for_result)
+			#cv2.imshow("Output", image_for_result)
 			#cv2.imwrite("cam/{}_{}.jpg".format(filename,"saved"),image_for_result)	
 
-			fps.update()
-
+			#fps.update()
+			time.sleep(2)
 		except Exception as e:
 			raise
 		else:
@@ -258,12 +263,13 @@ if mode == "image":
 
 		time_consumed_draw= (time.clock() - start)
 		
-		print("Image: {} prediction: {} = proc: {} + load_get: {} + rest: {} = {}; drawing: {}".format(filename,time_consumed_pred, 
+		print("Image: {} prediction: {:0.3f} = proc: {:0.3f} + load_get: {:0.3f} + rest: {:0.3f} = {:0.3f}; drawing: {:0.3f}".format(filename,time_consumed_pred, 
 			time_consumed_proc, time_consumed_load_and_get, time_consumed_rest,time_consumed_proc+time_consumed_load_and_get+time_consumed_rest,time_consumed_draw))
 
-		print("Image: {} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {}\n".format(filename,
+		print("Image: {} prediction: {}% = proc: {:0.2f}% + load_get: {:0.2f}% + rest: {:0.2f}% = {:0.2f}%; drawing: {:0.3f}\n".format(filename,
 			(time_consumed_pred/time_consumed_pred)*100, 
-			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
+			(time_consumed_proc/time_consumed_pred)*100, (time_consumed_load_and_get/time_consumed_pred)*100, (time_consumed_rest/time_consumed_pred)*100,
+			((time_consumed_proc+time_consumed_load_and_get+time_consumed_rest)/time_consumed_pred)*100,time_consumed_draw))
 
 
 		key = cv2.waitKey(1) & 0xFF
