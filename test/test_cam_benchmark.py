@@ -42,12 +42,16 @@ def preprocess_image(input_image):
 
 def predict(image, graph):
 	# preprocess the image
+	start = time.clock()
 	image = preprocess_image(image)
+	time_consumed_proc = (time.clock() - start)
 
 	# send the image to the NCS and run a forward pass to grab the
 	# network predictions
+	start = time.clock()
 	graph.LoadTensor(image, None)
 	(output, _) = graph.GetResult()
+	time_consumed_load_and_get = (time.clock() - start)
 
 	# grab the number of valid object predictions from the output,
 	# then initialize the list of predictions
@@ -91,7 +95,7 @@ def predict(image, graph):
 		predictions.append(prediction)
 
 	# return the list of predictions to the calling function
-	return predictions
+	return predictions, time_consumed_proc, time_consumed_load_and_get
 
 # grab a list of all NCS devices plugged in to USB
 print("[INFO] finding NCS devices...")
@@ -138,8 +142,11 @@ if mode == "cam":
 
 			start = time.clock()
 			# use the NCS to acquire predictions
-			predictions = predict(frame, graph)
+			predictions, time_consumed_proc = predict(frame, graph)
 
+			time_consumed_pred= (time.clock() - start)
+
+			start = time.clock()
 			# loop over our predictions
 			for (i, pred) in enumerate(predictions):
 				# extract prediction data for readability
@@ -174,9 +181,9 @@ if mode == "cam":
 					cv2.putText(image_for_result, label, (startX, y),
 						cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 
-			fim= (time.clock() - start)
-			print(1/fim)
+			time_consumed_draw= (time.clock() - start)
 
+			print("Image: {} prediction: {} drawing: {}".format(filename,time_consumed_pred,time_consumed_draw))
 
 			key = cv2.waitKey(1) & 0xFF
 			if key == ord("q"):
@@ -199,8 +206,6 @@ if mode == "cam":
 if mode == "image":
 	for filename in os.listdir(directory):
 		cap = cv2.imread(os.path.join(directory, filename))	
-		
-		print(filename) #print name of file
 
 		frame = cap
 		image_for_result = frame.copy()
@@ -208,7 +213,7 @@ if mode == "image":
 
 		start = time.clock()
 		# use the NCS to acquire predictions
-		predictions = predict(frame, graph)
+		predictions, time_consumed_proc, time_consumed_load_and_get = predict(frame, graph)
 
 		time_consumed_pred= (time.clock() - start)
 		
@@ -250,7 +255,7 @@ if mode == "image":
 
 		time_consumed_draw= (time.clock() - start)
 		
-		print("Time of prediction is {}, time for drawing boxes is {}".format(time_consumed_pred,time_consumed_draw))
+		print("Image: {} prediction: {} drawing: {} proc: {} load_get: {}".format(filename,time_consumed_pred,time_consumed_draw, time_consumed_proc, time_consumed_load_and_get))
 
 		key = cv2.waitKey(1) & 0xFF
 		if key == ord("q"):
