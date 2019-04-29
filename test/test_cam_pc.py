@@ -16,7 +16,7 @@ COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 # frame dimensions should be sqaure
 PREPROCESS_DIMS = (300, 300)
-DISPLAY_DIMS = (600, 400)
+DISPLAY_DIMS = (600, 600)
 
 # calculate the multiplier needed to scale the bounding boxes
 DISP_MULTIPLIER = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
@@ -115,7 +115,6 @@ graph = device.AllocateGraph(graph_in_memory)
 print("[INFO] starting the video stream and FPS counter...")
 cap = cv2.VideoCapture(0)
 time.sleep(1)
-fps = FPS().start()
 
 while True:
 	try:
@@ -126,10 +125,10 @@ while True:
 		image_for_result = frame.copy()
 		image_for_result = cv2.resize(image_for_result, DISPLAY_DIMS)
 
-		start = time.clock()
+		
 		# use the NCS to acquire predictions
 		predictions = predict(frame, graph)
-		fim= (time.clock() - start)
+		
 
 		# loop over our predictions
 		for (i, pred) in enumerate(predictions):
@@ -164,19 +163,14 @@ while True:
 				cv2.putText(image_for_result, label, (startX, y),
 					cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 
-
+		fim= (time.clock() - start)
 		cv2.putText(image_for_result,"time:" +str(fim),(20,40),
 			cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
 		cv2.putText(image_for_result,"fps:" +str(round(1/fim)),(20,65),
 			cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
 
 
-
-
-
 		cv2.imshow("Output", image_for_result)
-
-		fps.update()
 
 
 		key = cv2.waitKey(1) & 0xFF
@@ -188,3 +182,9 @@ while True:
 		pass
 	finally:
 		pass
+
+
+# clean up the graph and device
+graph.DeallocateGraph()
+device.CloseDevice()
+
