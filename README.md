@@ -5,6 +5,10 @@ This software is intended to do crowd recognition and track number of people tha
 The main hardware is  RaspPi3 and camera + Movidius Neural Stick and it shoud work in real time.
 
 
+# in order to run this code in a new pc please run install_dep.sh and install NCSdk api
+
+
+
 TO-DO list:
 SOFTWARE:
 1. make a parser for test_cam_benchmark.py script to pass a "mode" through command line 
