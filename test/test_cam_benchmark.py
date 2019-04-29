@@ -146,7 +146,7 @@ time.sleep(1)
 fps = FPS().start()
 fimt = []
 
-if mode == "cam" | "rcam":
+if mode == "cam" or "rcam":
 	
 	while True:
 		try:
