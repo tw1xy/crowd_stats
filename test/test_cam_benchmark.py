@@ -7,9 +7,6 @@ import numpy as np
 import time
 import cv2
 import os
-#mode of operating -> "image" for test images/ "cam" for video 
-mode = "image"
-#mode = "cam"
 
 #directory with images
 directory = ("images")
@@ -27,6 +24,15 @@ DISPLAY_DIMS = (600, 600)
 
 # calculate the multiplier needed to scale the bounding boxes
 DISP_MULTIPLIER = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
+
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-m", "--mode", required=True,
+	help="running mode: 'image' for images; 'cam' for pc cam; 'rcam' for raspberry cam")
+args = vars(ap.parse_args())
+
+mode = args["mode"]
+
 
 def preprocess_image(input_image):
 	# preprocess the image
@@ -125,9 +131,15 @@ with open("graphs/mobilenetgraph", mode="rb") as f:
 print("[INFO] allocating the graph on the NCS...")
 graph = device.AllocateGraph(graph_in_memory)
 
-print("[INFO] starting the video stream and FPS counter...")
 
-#load an image to test -> to-do: make to pass an image as argument to program
+
+if mode == "cam":
+	cap = cv2.VideoCapture(0)
+	print("[INFO] starting the video stream from camera")
+
+if mode == "rcam":
+	cap = VideoStream(usePiCamera=True).start()
+	print("[INFO] starting the video stream from raspberry")
 
 
 time.sleep(1)
@@ -135,12 +147,15 @@ fps = FPS().start()
 fimt = []
 
 if mode == "cam":
-	cap = cv2.VideoCapture(0)
+	
 	while True:
 		try:
 			first_start = time.clock()
 			#for video stream
-			ret, frame = cap.read()
+			if mode == "cam":
+				ret, frame = cap.read()
+			if mode == "rcam":
+				frame = cap.read()
 			image_for_result = frame.copy()
 			image_for_result = cv2.resize(image_for_result, DISPLAY_DIMS)
 
