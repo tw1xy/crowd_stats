@@ -146,8 +146,7 @@ time.sleep(1)
 fps = FPS().start()
 fimt = []
 
-if mode == "cam" or "rcam":
-	
+if mode == "cam" or mode == "rcam":
 	while True:
 		try:
 			first_start = time.clock()
@@ -302,6 +301,7 @@ if mode == "image":
 
 		#fps.update()
 
-
+else:
+	print("no such mode, try again: rcam, cam, image")
 
 
