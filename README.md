@@ -1,11 +1,12 @@
 # crowd_recog
 
 This software is intended to do crowd recognition and track number of people that are paying attention to some specific point, in this case it would be an ad board on the street.
+At this stage I have only some test scripts to chek the performance on pc and raspberry, also have test_cam to wathc some real time predictions.
 
 The main hardware is  RaspPi3 and camera + Movidius Neural Stick and it shoud work in real time.
 
 
-# in order to run this code in a new pc please run install_dep.sh and install NCSdk api
+# in order to run this code on a new pc please run install_dep.sh and install NCSdk api
 
 
 
