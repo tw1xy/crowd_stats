@@ -12,7 +12,8 @@ The main hardware is  RaspPi3 and camera + Movidius Neural Stick and it shoud wo
 
 TO-DO list:
 SOFTWARE:
-1. make a parser for test_cam_benchmark.py script to pass a "mode" through command line 
+1. make a parser for test_cam_benchmark.py script to pass a "mode" through command line - DONE
+ . test loading and unloading the model and time required for the process
 2. Train model
 	2.1 may be smartphones or any other object
 	2.2 Learn how to train a good model
