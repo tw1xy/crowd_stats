@@ -30,8 +30,8 @@ while True:
 	time_consumed = (time.clock() - start)
 	print("Allocating Graph: {:0.3f}".format(time_consumed))
 
-	#start = time.clock()
-	#graph.DeallocateGraph()
-	#time_consumed = (time.clock() - start)
-	#print("Deallocating Graph: {:0.3f}".format(time_consumed))
+	start = time.clock()
+	graph.DeallocateGraph()
+	time_consumed = (time.clock() - start)
+	print("Deallocating Graph: {:0.3f}".format(time_consumed))
 	
