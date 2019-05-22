@@ -13,6 +13,7 @@ CLASSES = ("background", "aeroplane", "bicycle", "bird",
 "diningtable", "dog", "horse", "motorbike", "person",
 "pottedplant", "sheep", "sofa", "train", "tvmonitor")
 
+
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 PREPROCESS_DIMS = (300, 300)
@@ -71,11 +72,17 @@ def process_data(image,input):
 
 
 
+# Search for devices attached
 device_list = mvnc.enumerate_devices()
 device = mvnc.Device(device_list[0])
-device.open()
+# Open device
+try:
+	device.open()
+except:
+	print("Error - Could not open NCS device.")
+	quit()
 
-
+# Open graph file
 with open(GRAPH_FILEPATH, mode='rb') as f:
     graph_buffer = f.read()
 graph = mvnc.Graph('graph1')
@@ -83,7 +90,7 @@ graph = mvnc.Graph('graph1')
 # Allocate the graph to the device
 input_fifo, output_fifo = graph.allocate_with_fifos(device, graph_buffer)
 
-
+# Open video stream from webcam
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -98,42 +105,50 @@ while True:
 
 		output, user_obj = output_fifo.read_elem()
 
-		predictions = process_data(frame,output)
+		order = output.argsort()[::-1][:5]
+		print('\n------- predictions --------')
+		for i in range(0,1):
+			print ('prediction ' + str(i) + ' (probability ' + str(output[order[i]]*100) + '%) is ' + CLASSES[order[i]] + '  label index is: ' + str(order[i]) )
 
-		# loop over our predictions
-		for (i, pred) in enumerate(predictions):
-			# extract prediction data for readability
-			(pred_class, pred_conf, pred_boxpts) = pred
 
-			# filter out weak detections by ensuring the `confidence`
-			# is greater than the minimum confidence
-			if pred_conf > 0.5:
-				# print prediction to terminal
-				print("[INFO] Prediction #{}: class={}, confidence={}, "
-					"boxpoints={}".format(i, CLASSES[pred_class], pred_conf,
-					pred_boxpts))
 
-				# check if we should show the prediction data
-				# on the frame
-				# build a label consisting of the predicted class and
-				# associated probability
-				label = "{}: {:.2f}%".format(CLASSES[pred_class],
-					pred_conf * 100)
 
-				# extract information from the prediction boxpoints
-				(ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
-				ptA = (ptA[0] * DISP_MULTIPLIER, ptA[1] * DISP_MULTIPLIER)
-				ptB = (ptB[0] * DISP_MULTIPLIER, ptB[1] * DISP_MULTIPLIER)
-				(startX, startY) = (ptA[0], ptA[1])
-				y = startY - 15 if startY - 15 > 15 else startY + 15
+		# predictions = process_data(frame,output)
+
+		# # loop over our predictions
+		# for (i, pred) in enumerate(predictions):
+		# 	# extract prediction data for readability
+		# 	(pred_class, pred_conf, pred_boxpts) = pred
+
+		# 	# filter out weak detections by ensuring the `confidence`
+		# 	# is greater than the minimum confidence
+		# 	if pred_conf > 0.5:
+		# 		# print prediction to terminal
+		# 		print("[INFO] Prediction #{}: class={}, confidence={}, "
+		# 			"boxpoints={}".format(i, CLASSES[pred_class], pred_conf,
+		# 			pred_boxpts))
+
+		# 		# check if we should show the prediction data
+		# 		# on the frame
+		# 		# build a label consisting of the predicted class and
+		# 		# associated probability
+		# 		label = "{}: {:.2f}%".format(CLASSES[pred_class],
+		# 			pred_conf * 100)
+
+		# 		# extract information from the prediction boxpoints
+		# 		(ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
+		# 		ptA = (ptA[0] * DISP_MULTIPLIER, ptA[1] * DISP_MULTIPLIER)
+		# 		ptB = (ptB[0] * DISP_MULTIPLIER, ptB[1] * DISP_MULTIPLIER)
+		# 		(startX, startY) = (ptA[0], ptA[1])
+		# 		y = startY - 15 if startY - 15 > 15 else startY + 15
 				
-				# display the rectangle and label text
-				cv2.rectangle(image_for_result, ptA, ptB,
-					COLORS[pred_class], 2)
-				cv2.putText(image_for_result, label, (startX, y),
-					cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
+		# 		# display the rectangle and label text
+		# 		cv2.rectangle(image_for_result, ptA, ptB,
+		# 			COLORS[pred_class], 2)
+		# 		cv2.putText(image_for_result, label, (startX, y),
+		# 			cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 3)
 					
-		cv2.imshow("Output", image_for_result)
+		# cv2.imshow("Output", image_for_result)
 		
 
 		key = cv2.waitKey(1) & 0xFF
