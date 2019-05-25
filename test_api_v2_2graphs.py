@@ -18,10 +18,10 @@ FILENAME = "1.jpg"
 #cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
 
 
-PREPROCESS_DIMS = (300, 300)
-DISPLAY_DIMS = (500, 500)
-DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
-DISP_MULTIPLIER_X = DISPLAY_DIMS[1] // PREPROCESS_DIMS[1]
+#PREPROCESS_DIMS = (300, 300)
+#DISPLAY_DIMS = (700, 700)
+#DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
+#DISP_MULTIPLIER_X = DISPLAY_DIMS[1] // PREPROCESS_DIMS[1]
 
 
 GRAPH_FILEPATH1 = 'graphs/g_s12'
@@ -68,15 +68,15 @@ def draw_output(predictions,image_for_result):
                 pred_conf * 100)
 
             (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
-            ptA = (ptA[0] * DISP_MULTIPLIER_X, ptA[1] * DISP_MULTIPLIER_Y)
-            ptB = (ptB[0] * DISP_MULTIPLIER_X, ptB[1] * DISP_MULTIPLIER_Y)
+            ptA = (int(ptA[0] * DISP_MULTIPLIER_X), int(ptA[1] * DISP_MULTIPLIER_Y))
+            ptB = (int(ptB[0] * DISP_MULTIPLIER_X), int(ptB[1] * DISP_MULTIPLIER_Y))
             (startX, startY) = (ptA[0], ptA[1])
             y = startY - 15 if startY - 15 > 15 else startY + 15
 
             cv2.rectangle(image_for_result, ptA, ptB,
                 COLORS[pred_class], 2)
             cv2.putText(image_for_result, label, (startX, y),
-                cv2.FONT_HERSHEY_SIMPLEX, 2, COLORS[pred_class], 10)
+                cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
     return image_for_result
 
 def process_faces(img,predictions):
@@ -86,16 +86,21 @@ def process_faces(img,predictions):
     
         if pred_conf > 0.5:
             (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
-            x = ptA[0]*DISP_MULTIPLIER_X
-            y = ptA[1]*DISP_MULTIPLIER_Y
-            xf = ptB[0]*DISP_MULTIPLIER_X
-            yf = ptB[1]*DISP_MULTIPLIER_Y
-            img_cropped = img[y:yf, x:xf]
-            img_cropped = pre_process_img(img_cropped,PREPROCESS_DIMS)
-        graph2.queue_inference_with_fifo_elem(input_fifo2, output_fifo2, img_cropped, None)
+            x = int(ptA[0]*DISP_MULTIPLIER_X)
+            y = int(ptA[1]*DISP_MULTIPLIER_Y)
+            xf = int(ptB[0]*DISP_MULTIPLIER_X)
+            yf = int(ptB[1]*DISP_MULTIPLIER_Y)
+            
+            #img_cropped = img[y:yf, x:xf]
+            #img_cropped = img
+            #img_cropped = pre_process_img(img_cropped,PREPROCESS_DIMS)
+        graph2.queue_inference_with_fifo_elem(input_fifo2, output_fifo2, img, None)
         output2, user_obj = output_fifo2.read_elem()
         outputs.append(output2)
     return outputs
+
+    
+    
 
 def pre_process_img(img,PREPROCESS_DIMS):
     img = cv2.resize(img, PREPROCESS_DIMS)
@@ -139,31 +144,41 @@ input_fifo2, output_fifo2 = graph2.allocate_with_fifos(device, graph_buffer2)
 #img_out = draw_output(preds2,img_out)
 
 
-#cap = cv2.VideoCapture(0)
-cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))
+cap = cv2.VideoCapture(0)
+ret, frame = cap.read()
+#cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))
 PREPROCESS_DIMS = (300, 300)
-#DISPLAY_DIMS = (cap.shape[0], cap.shape[1])
-DISPLAY_DIMS = (600, 600)
-DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
-DISP_MULTIPLIER_X = DISPLAY_DIMS[1] // PREPROCESS_DIMS[1]
+DISPLAY_DIMS = (frame.shape[0], frame.shape[1])
+#DISPLAY_DIMS = (600, 600)
+DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] / PREPROCESS_DIMS[0]
+DISP_MULTIPLIER_X = DISPLAY_DIMS[1] / PREPROCESS_DIMS[1]
 z=0
 while True:
-
-    #ret, frame = cap.read()
-    frame = cap
-    image_for_result = cv2.resize(frame,(DISPLAY_DIMS[1],DISPLAY_DIMS[0]))
+    startT =time.clock()
+    ret, frame = cap.read()
+    #frame = cap
+    image_for_result = frame
     img = pre_process_img(frame,PREPROCESS_DIMS)
     
     start = time.clock()
     graph1.queue_inference_with_fifo_elem(input_fifo, output_fifo, img, None)
     output, user_obj = output_fifo.read_elem()
-    print(time.clock() - start)
+    print("time: {} and fps: {} ".format(time.clock() - start,1/(time.clock() - start)))
+
 
     preds = process_prediction(output)
+     
+    graph2.queue_inference_with_fifo_elem(input_fifo2, output_fifo2, img, None)
+    output2, user_obj = output_fifo2.read_elem()
+    
+    preds2 = process_prediction(output2)
+        
 
     img_out = draw_output(preds,image_for_result)
+    if preds2:
+        img_out = draw_output(preds2,img_out)
 
-    #cv2.imshow('image',img_out)
+    cv2.imshow('image',img_out)
     if z==0:
         cv2.imwrite("images/1_v2.jpg",img_out)
         z=1
@@ -171,6 +186,8 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         break
+
+    print("Atime: {} and Afps: {} ".format(time.clock() - startT,1/(time.clock() - startT)))
 
 input_fifo.destroy()
 output_fifo.destroy()

@@ -13,15 +13,15 @@ CLASSES = ("background", "aeroplane", "bicycle", "bird",
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 DIRECTORY = "images"
-FILENAME = "1.jpg"
+FILENAME = "img9.jpg"
 
 cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
 image_for_result = cap.copy()
 
 PREPROCESS_DIMS = (300, 300)
 DISPLAY_DIMS = (cap.shape[0], cap.shape[1])
-DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] // PREPROCESS_DIMS[0]
-DISP_MULTIPLIER_X = DISPLAY_DIMS[1] // PREPROCESS_DIMS[1]
+DISP_MULTIPLIER_Y = DISPLAY_DIMS[0] / PREPROCESS_DIMS[0]
+DISP_MULTIPLIER_X = DISPLAY_DIMS[1] / PREPROCESS_DIMS[1]
 GRAPH_FILEPATH = 'graphs/g_s12'
 
 
@@ -81,14 +81,14 @@ for (i, pred) in enumerate(predictions):
             pred_conf * 100)
 
         (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
-        ptA = (ptA[0] * DISP_MULTIPLIER_X, ptA[1] * DISP_MULTIPLIER_Y)
-        ptB = (ptB[0] * DISP_MULTIPLIER_X, ptB[1] * DISP_MULTIPLIER_Y)
+        ptA = (int(ptA[0] * DISP_MULTIPLIER_X), int(ptA[1] * DISP_MULTIPLIER_Y))
+        ptB = (int(ptB[0] * DISP_MULTIPLIER_X), int(ptB[1] * DISP_MULTIPLIER_Y))
         (startX, startY) = (ptA[0], ptA[1])
         y = startY - 15 if startY - 15 > 15 else startY + 15
 
         cv2.rectangle(image_for_result, ptA, ptB,
-            COLORS[pred_class], 10)
+            COLORS[pred_class], 4)
         cv2.putText(image_for_result, label, (startX, y),
-            cv2.FONT_HERSHEY_SIMPLEX, 3, COLORS[pred_class], 10)
+            cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
 
 cv2.imwrite("images/1_v2.jpg",image_for_result)
