@@ -1,26 +1,22 @@
-# crowd_recog
+# crowd_stats
 
-This software is intended to do crowd recognition and track number of people that are paying attention to some specific point, in this case it would be an ad board on the street.
-At this stage I have only some test scripts to chek the performance on pc and raspberry, also have test_cam to wathc some real time predictions.
+This software is intended to do crowd detection and track number of people that are in fornt of camera and return teir age, gender, emotional state and if they are paying attention to the advertising or not.
+
+At this stage the system detects people.
 
 The main hardware is  RaspPi3 and camera + Movidius Neural Stick and it shoud work in real time.
 
+# In order to run, install ncsdk_v2 api on your machine and run test_api_v2.py with python3
 
-# in order to run this code on a new pc please run install_dep.sh and install NCSdk api
-
+(!) throw some videos to videos folder in order to run another tests.
 
 
 TO-DO list:
 SOFTWARE:
-1. make a parser for test_cam_benchmark.py script to pass a "mode" through command line - DONE
-1. test loading and unloading the model and time required for the process
-2. Train model
-	2.1 may be smartphones or any other object
-	2.2 Learn how to train a good model
-	2.3 Learn how to convert model to a compatible graph for NCS
-3. Start to collect apropriate data for training 
-4. start writing the state of the art
-5. Write a document
+1. add more layres of detection, i.e. more graphs to predict gender, age...
+2. track people, give them id's
+3. start writing the state of the art
+4. Write a document
  
 
 HARDWARE:
