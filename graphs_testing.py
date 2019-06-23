@@ -22,21 +22,15 @@ ap.add_argument("-m", "--mode", required=True,
 	help="running mode: 'image' for images; 'cam' for pc cam; 'rcam' for raspberry cam")
 ap.add_argument("-f", "--file_name", help=" video file to run inferences on")
 args = vars(ap.parse_args())
-
 mode = args["mode"]
 file_name = args["file_name"]
 
-#cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
-
 PREPROCESS_DIMS = (300, 300)
 
-
-
-
-GRAPH_FILEPATH1 = 'graphs/g_s12'
+GRAPH_FILEPATH1 = 'graphs/g_300'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
 #GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
-GRAPH_FILEPATH2 = 'graphs/face_detection_adas_graph'
+
 
 def process_prediction(output):
     num_valid_boxes = int(output[0])
@@ -89,25 +83,9 @@ def draw_output(predictions,image_for_result):
                 cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
     return image_for_result
 
-def process_faces(img,predictions):
-    outputs = []
-    for (i, pred) in enumerate(predictions):
-        (_, pred_conf, pred_boxpts) = pred
-    
-        if pred_conf > 0.5:
-            (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
-            x = int(ptA[0]*DISP_MULTIPLIER_X)
-            y = int(ptA[1]*DISP_MULTIPLIER_Y)
-            xf = int(ptB[0]*DISP_MULTIPLIER_X)
-            yf = int(ptB[1]*DISP_MULTIPLIER_Y)
-            
-            #img_cropped = img[y:yf, x:xf]
-            #img_cropped = img
-            #img_cropped = pre_process_img(img_cropped,PREPROCESS_DIMS)
-        graph2.queue_inference_with_fifo_elem(input_fifo2, output_fifo2, img, None)
-        output2, user_obj = output_fifo2.read_elem()
-        outputs.append(output2)
-    return outputs
+def process_faces(predictions):
+    for i in range():
+        pass
 
 def pre_process_img(img,PREPROCESS_DIMS):
     img = cv2.resize(img, PREPROCESS_DIMS)
@@ -126,6 +104,7 @@ graph1 = mvnc.Graph('graph1')
 
 input_fifo, output_fifo = graph1.allocate_with_fifos(device, graph_buffer1)
 
+#cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))
 
 if mode == "cam":
 	cap = cv2.VideoCapture(0)
