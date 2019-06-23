@@ -22,15 +22,20 @@ ap.add_argument("-m", "--mode", required=True,
 	help="running mode: 'image' for images; 'cam' for pc cam; 'rcam' for raspberry cam")
 ap.add_argument("-f", "--file_name", help=" video file to run inferences on")
 args = vars(ap.parse_args())
+
 mode = args["mode"]
 file_name = args["file_name"]
 
+#cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
+
 PREPROCESS_DIMS = (300, 300)
+
+
+
 
 GRAPH_FILEPATH1 = 'graphs/g_300'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
 #GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
-
 
 def process_prediction(output):
     num_valid_boxes = int(output[0])
