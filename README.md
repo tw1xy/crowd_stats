@@ -22,3 +22,8 @@ SOFTWARE:
 HARDWARE:
 1. set up 3A power converter (DC12V3A to DCV3A)
 2. make a box
+
+
+!REQUISITES!
+PC: ubuntu 16.04 with 4.15.0-54-generic kernel works fine
+i5 8300H with 1050 with 418.56 graphic drivers with CUDA Toolkit 10.1.168
