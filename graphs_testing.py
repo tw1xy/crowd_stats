@@ -33,7 +33,7 @@ PREPROCESS_DIMS = (300, 300)
 
 
 
-GRAPH_FILEPATH1 = 'graphs/g_300'
+GRAPH_FILEPATH1 = 'graphs/graph2'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
 #GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
 

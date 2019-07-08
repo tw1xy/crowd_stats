@@ -1,3 +1,1 @@
-g_300 = g_s12 , just with different names
-graph_v1 is g_300 but for api v1
-ssd_face_longrange is for general images: detects faces in distance (2-10m)
+g_300 = "MobileNet-SSD" pretrained with different classes, including people
