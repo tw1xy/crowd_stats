@@ -1,1 +1,3 @@
-g_300 = "MobileNet-SSD" pretrained with different classes, including people
+g_300 = "MobileNet-SSD" pretrained with different classes, including people, standard
+ssd-face = "MobileNet-SSD" https://github.com/BeloborodovDS/MobilenetSSDFace from models/deploy
+age_model, gender_model and age_gender_model is from https://github.com/movidius/ncappzoo/tree/master/caffe/AgeNet

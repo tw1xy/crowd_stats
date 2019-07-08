@@ -11,6 +11,9 @@ CLASSES = ("background", "aeroplane", "bicycle", "bird",
 "diningtable", "dog", "horse", "motorbike", "person",
 "pottedplant", "sheep", "sofa", "train", "tvmonitor")
 
+age_list=['(0, 2)','(4, 6)','(8, 12)','(15, 20)','(25, 32)','(38, 43)','(48, 53)','(60, 100)']
+gender_list=['Male','Female']
+
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 DIRECTORY = "images"
@@ -28,12 +31,13 @@ file_name = args["file_name"]
 
 #cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
 
-PREPROCESS_DIMS = (300, 300)
+#PREPROCESS_DIMS = (300, 300)
+PREPROCESS_DIMS = (227, 227)
 
 
 
 
-GRAPH_FILEPATH1 = 'graphs/graph2'
+GRAPH_FILEPATH1 = 'graphs/age_model'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
 #GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
 
@@ -64,6 +68,13 @@ def process_prediction(output):
         prediction = (pred_class, pred_conf, pred_boxpts)
         predictions.append(prediction)
     return predictions
+
+def process_age(output):
+    age_index = output.argmax()
+    age = age_list[age_index]
+    return age
+
+
 
 def draw_output(predictions,image_for_result):
     for (i, pred) in enumerate(predictions):
@@ -146,11 +157,13 @@ if mode == "cam" or mode == "rcam" or mode == "vid":
         start = time.clock()
         graph1.queue_inference_with_fifo_elem(input_fifo, output_fifo, img, None)
         output, user_obj = output_fifo.read_elem()
-        print("time: {} and fps: {} ".format(time.clock() - start,1/(time.clock() - start)))
+        #print("time: {} and fps: {} ".format(time.clock() - start,1/(time.clock() - start)))
+
 
 
         preds = process_prediction(output)
-
+        print(output)
+        print(process_age(output))
         img_out = draw_output(preds,image_for_result)
 
         cv2.imshow('image',img_out)
@@ -162,7 +175,7 @@ if mode == "cam" or mode == "rcam" or mode == "vid":
         if key == ord("q"):
             break
 
-        print("Atime: {} and Afps: {} ".format(time.clock() - startT,1/(time.clock() - startT)))
+        #print("Atime: {} and Afps: {} ".format(time.clock() - startT,1/(time.clock() - startT)))
 
 input_fifo.destroy()
 output_fifo.destroy()

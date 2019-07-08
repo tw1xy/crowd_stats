@@ -1,0 +1,6 @@
+CAFFE ZOO: https://github.com/BVLC/caffe/wiki/Model-Zoo
+
+AGE AND GENDER CNN: 
+git: https://gist.github.com/GilLevi/c9e99062283c719c03de
+page: https://talhassner.github.io/home/publication/2015_CVPR
+paper: https://talhassner.github.io/home/projects/cnn_agegender/CVPR2015_CNN_AgeGenderEstimation.pdf
