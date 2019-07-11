@@ -7,3 +7,8 @@ paper: https://talhassner.github.io/home/projects/cnn_agegender/CVPR2015_CNN_Age
 
 TRACKING PEOPLE: https://www.di.ens.fr/willow/pdfscurrent/rodriguez11b.pdf
     this may be best: https://www.pyimagesearch.com/2018/07/23/simple-object-tracking-with-opencv/
+
+VIDEO OUT to webPAGE: https://github.com/PiSimo/PiCamNN    
+
+INTERESING PAPRE: https://medium.com/nodeflux/performance-showdown-of-publicly-available-face-detection-model-7c725747094a
+    by "mobilenet ssd complexity" search
