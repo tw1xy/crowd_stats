@@ -17,6 +17,7 @@ ilsvrc_mean = np.load('graphs/age_gender_mean.npy').mean(1).mean(1)
 def process_prediction(output,image_shape):
     num_valid_boxes = int(output[0])
     predictions = []
+    boxes_only = []
     for box_index in range(num_valid_boxes):
         base_index = 7 + box_index * 7
 
@@ -41,7 +42,9 @@ def process_prediction(output,image_shape):
         pred_boxpts = ((x1, y1), (x2, y2))
         prediction = (pred_class, pred_conf, pred_boxpts)
         predictions.append(prediction)
-    return predictions
+
+        boxes_only.append((x1, y1, x2, y2))
+    return predictions, boxes_only
 
 def draw_boxes(predictions,image_for_result,DISP_MULT):
     DISP_MULTIPLIER_X, DISP_MULTIPLIER_Y = DISP_MULT
@@ -62,10 +65,10 @@ def draw_boxes(predictions,image_for_result,DISP_MULT):
             (startX, startY) = (ptA[0], ptA[1])
             y = startY - 15 if startY - 15 > 15 else startY + 15
 
-            cv2.rectangle(image_for_result, ptA, ptB,
-                COLORS[pred_class], 2)
-            cv2.putText(image_for_result, label, (startX, y),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
+            # cv2.rectangle(image_for_result, ptA, ptB,
+            #     COLORS[pred_class], 2)
+            # cv2.putText(image_for_result, label, (startX, y),
+            #     cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
 
         return image_for_result
 
