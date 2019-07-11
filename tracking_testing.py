@@ -23,7 +23,9 @@ graph = mvnc.Graph('graph')
 
 input_fifo, output_fifo = graph.allocate_with_fifos(device, graph_buffer)
 
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture('images/street2.mp4')
+cap = VideoStream(usePiCamera=True).start()
 ret, frame = cap.read()
 
 #for showing image
@@ -39,19 +41,27 @@ ct = CentroidTracker()
 
 
 while True:
+    startT =time.clock()
     ret, frame = cap.read()
+    
 
     image_for_result = frame
     img = sf.pre_process_img(frame,PREPROCESS_DIMS)
 
+    #print("time_frame_aq: {:.0f} ms".format((time.clock()-startT)*1000))
+    start =time.clock()
+
     graph.queue_inference_with_fifo_elem(input_fifo, output_fifo, img, None)
     output, user_obj = output_fifo.read_elem()
+
+    #print("predicting: {:.0f} ms".format((time.clock()-start)*1000))
 
     predictions, boxes = sf.process_prediction(output,PREPROCESS_DIMS)
 
     img_out= sf.draw_output(predictions,image_for_result,DISP_MULT)
     
-
+    #select only person boxes
+    boxes_p = sf.person_boxes_only(predictions)
     #TRACKING STARTS HERE
     people = ct.update(boxes)
     for (objectID, centroid) in people.items():
@@ -62,6 +72,8 @@ while True:
 
 
     cv2.imshow('image',img_out)
+
+    #print("Total: {:.0f} ms".format((time.clock()-startT)*1000))
 
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):

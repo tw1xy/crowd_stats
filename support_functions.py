@@ -41,10 +41,24 @@ def process_prediction(output,image_shape):
         pred_conf = output[base_index + 2]
         pred_boxpts = ((x1, y1), (x2, y2))
         prediction = (pred_class, pred_conf, pred_boxpts)
-        predictions.append(prediction)
-
-        boxes_only.append((x1, y1, x2, y2))
+        
+        if 1:
+            predictions.append(prediction)
+            boxes_only.append((x1, y1, x2, y2))
+        else:
+            pass
+        
     return predictions, boxes_only
+
+def person_boxes_only(predictions):
+    boxes_only = []
+    for (i, pred) in enumerate(predictions):
+        (pred_class, pred_conf, pred_boxpts) = pred
+        if pred_conf > 0.5 and pred_class == 15:
+            boxes_only.append(pred_boxpts[0]+pred_boxpts[1])
+        else:
+            pass
+    return boxes_only
 
 def draw_boxes(predictions,image_for_result,DISP_MULT):
     DISP_MULTIPLIER_X, DISP_MULTIPLIER_Y = DISP_MULT
@@ -53,8 +67,8 @@ def draw_boxes(predictions,image_for_result,DISP_MULT):
         (pred_class, pred_conf, pred_boxpts) = pred
 
         if pred_conf > 0.5:
-            print("[INFO] Prediction #{}: class={}, confidence={}, "
-                "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
+            #print("[INFO] Prediction #{}: class={}, confidence={}, "
+             #   "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
 
             label = "{}: {:.2f}%".format(CLASSES[pred_class],
                 pred_conf * 100)
@@ -79,8 +93,8 @@ def draw_output(predictions,image_for_result,DISP_MULT):
         (pred_class, pred_conf, pred_boxpts) = pred
 
         if pred_conf > 0.5:
-            print("[INFO] Prediction #{}: class={}, confidence={}, "
-                "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
+            # print("[INFO] Prediction #{}: class={}, confidence={}, "
+            #     "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
 
             label = "{}: {:.2f}%".format(CLASSES[pred_class],
                 pred_conf * 100)
