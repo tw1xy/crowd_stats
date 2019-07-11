@@ -13,7 +13,7 @@ CLASSES = ("background", "aeroplane", "bicycle", "bird",
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 DIRECTORY = "images"
-FILENAME = "1.jpg"
+FILENAME = "2.jpg"
 
 #cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
 
@@ -24,9 +24,9 @@ FILENAME = "1.jpg"
 #DISP_MULTIPLIER_X = DISPLAY_DIMS[1] // PREPROCESS_DIMS[1]
 
 
-GRAPH_FILEPATH1 = 'graphs/g_s12'
+GRAPH_FILEPATH1 = 'graphs/g_300'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
-GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
+GRAPH_FILEPATH2 = 'graphs/ssd-face'
 
 def process_prediction(output):
     num_valid_boxes = int(output[0])

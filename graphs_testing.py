@@ -31,13 +31,13 @@ file_name = args["file_name"]
 
 #cap = cv2.imread(os.path.join(DIRECTORY, FILENAME))	
 
-#PREPROCESS_DIMS = (300, 300)
-PREPROCESS_DIMS = (227, 227)
+PREPROCESS_DIMS = (300, 300)
+#PREPROCESS_DIMS = (227, 227)
 
 
 
 
-GRAPH_FILEPATH1 = 'graphs/age_model'
+GRAPH_FILEPATH1 = 'graphs/ssd-face'
 #the next graph is from https://github.com/BeloborodovDS/MobilenetSSDFace
 #GRAPH_FILEPATH2 = 'graphs/ssd-face-longrange'
 
@@ -74,6 +74,10 @@ def process_age(output):
     age = age_list[age_index]
     return age
 
+def process_gender(output):
+    gender_index = output.argmax()
+    gender = gender_list[gender_index]
+    return gender
 
 
 def draw_output(predictions,image_for_result):
@@ -99,14 +103,28 @@ def draw_output(predictions,image_for_result):
                 cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
     return image_for_result
 
-def process_faces(predictions):
-    for i in range():
-        pass
 
 def pre_process_img(img,PREPROCESS_DIMS):
     img = cv2.resize(img, PREPROCESS_DIMS)
     img = img - 127.5
     img = img / 127.5
+    return img.astype(np.float32)
+
+
+ilsvrc_mean = np.load('graphs/age_gender_mean.npy').mean(1).mean(1) #loading the mean file
+def pre_process_img_2(img,PREPROCESS_DIMS,ilsvrc_mean):
+    img = cv2.resize(img, PREPROCESS_DIMS)
+    img = img.astype(np.float32)
+    img[:,:,0] = (img[:,:,0] - ilsvrc_mean[0])
+    img[:,:,1] = (img[:,:,1] - ilsvrc_mean[1])
+    img[:,:,2] = (img[:,:,2] - ilsvrc_mean[2])
+    return img
+
+def pre_process_img_3(img,PREPROCESS_DIMS):
+    img = cv2.resize(img, PREPROCESS_DIMS)
+    img = img - 127.5
+    img = img / 127.5
+    img = img.transpose((2,0,1))
     return img.astype(np.float32)
 
 
@@ -157,13 +175,13 @@ if mode == "cam" or mode == "rcam" or mode == "vid":
         start = time.clock()
         graph1.queue_inference_with_fifo_elem(input_fifo, output_fifo, img, None)
         output, user_obj = output_fifo.read_elem()
-        #print("time: {} and fps: {} ".format(time.clock() - start,1/(time.clock() - start)))
+        print("time: {} and fps: {} ".format(time.clock() - start,1/(time.clock() - start)))
 
 
 
         preds = process_prediction(output)
-        print(output)
-        print(process_age(output))
+        #print(output)
+        #print(process_gender(output))
         img_out = draw_output(preds,image_for_result)
 
         cv2.imshow('image',img_out)
