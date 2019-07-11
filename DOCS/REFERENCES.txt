@@ -4,3 +4,6 @@ AGE AND GENDER CNN:
 git: https://gist.github.com/GilLevi/c9e99062283c719c03de
 page: https://talhassner.github.io/home/publication/2015_CVPR
 paper: https://talhassner.github.io/home/projects/cnn_agegender/CVPR2015_CNN_AgeGenderEstimation.pdf
+
+TRACKING PEOPLE: https://www.di.ens.fr/willow/pdfscurrent/rodriguez11b.pdf
+    this may be best: https://www.pyimagesearch.com/2018/07/23/simple-object-tracking-with-opencv/
