@@ -42,7 +42,8 @@ def process_prediction(output,image_shape):
         pred_boxpts = ((x1, y1), (x2, y2))
         prediction = (pred_class, pred_conf, pred_boxpts)
         
-        if pred_class == 15:
+        
+        if pred_class == 15: #only people output
             predictions.append(prediction)
             boxes_only.append((x1, y1, x2, y2))
         else:
