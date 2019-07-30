@@ -23,9 +23,9 @@ graph = mvnc.Graph('graph')
 
 input_fifo, output_fifo = graph.allocate_with_fifos(device, graph_buffer)
 
-#cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture('images/street2.mp4')
-cap = VideoStream(usePiCamera=True).start()
+cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture('images/benidorm1.mp4')
+#cap = VideoStream(usePiCamera=True).start()
 ret, frame = cap.read()
 
 #for showing image
@@ -56,19 +56,19 @@ while True:
 
     #print("predicting: {:.0f} ms".format((time.clock()-start)*1000))
 
-    predictions, boxes = sf.process_prediction(output,PREPROCESS_DIMS)
+    predictions, boxes = sf.process_prediction(output,PREPROCESS_DIMS,DISP_MULT)
 
     img_out= sf.draw_output(predictions,image_for_result,DISP_MULT)
     
     #select only person boxes
-    boxes_p = sf.person_boxes_only(predictions)
+    #boxes_p = sf.person_boxes_only(predictions)
     #TRACKING STARTS HERE
     people = ct.update(boxes)
     for (objectID, centroid) in people.items():
         text = "ID {}".format(objectID)
-        cv2.putText(frame, text, (int(centroid[0]*DISP_MULT[0] - 10), int(centroid[1]*DISP_MULT[1] - 10)),
+        cv2.putText(frame, text, (int(centroid[0] - 10), int(centroid[1] - 10)),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        cv2.circle(frame, (int(centroid[0]*DISP_MULT[0]), int(centroid[1]*DISP_MULT[1])), 4, (0, 255, 0), -1)
+        cv2.circle(frame, (int(centroid[0]), int(centroid[1])), 4, (0, 255, 0), -1)
 
 
     cv2.imshow('image',img_out)

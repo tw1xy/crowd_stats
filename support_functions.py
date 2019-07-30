@@ -14,7 +14,7 @@ COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 #loading the mean file
 ilsvrc_mean = np.load('graphs/age_gender_mean.npy').mean(1).mean(1) 
 
-def process_prediction(output,image_shape):
+def process_prediction(output,image_shape,DISP_MULT):
     num_valid_boxes = int(output[0])
     predictions = []
     boxes_only = []
@@ -43,9 +43,10 @@ def process_prediction(output,image_shape):
         prediction = (pred_class, pred_conf, pred_boxpts)
         
         
-        if pred_class == 15: #only people output
+        if pred_conf > 0.7 and pred_class == 15: #only people output
             predictions.append(prediction)
-            boxes_only.append((x1, y1, x2, y2))
+            boxes_only.append((int(x1*DISP_MULT[0]), int(y1*DISP_MULT[1]), 
+                int(x2*DISP_MULT[0]), int(y2*DISP_MULT[1])))
         else:
             pass
         
@@ -55,7 +56,7 @@ def person_boxes_only(predictions):
     boxes_only = []
     for (i, pred) in enumerate(predictions):
         (pred_class, pred_conf, pred_boxpts) = pred
-        if pred_conf > 0.5 and pred_class == 15:
+        if pred_conf > 0.7 and pred_class == 15:
             boxes_only.append(pred_boxpts[0]+pred_boxpts[1])
         else:
             pass
