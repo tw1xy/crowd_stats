@@ -43,8 +43,9 @@ def process_prediction(output,image_shape,DISP_MULT):
         prediction = (pred_class, pred_conf, pred_boxpts)
         
         
-        if pred_conf > 0.7 and pred_class == 15: #only people output
+        if pred_conf > 0.6 and pred_class == 15 or pred_class == 1: #only people output
             predictions.append(prediction)
+            
             boxes_only.append((int(x1*DISP_MULT[0]), int(y1*DISP_MULT[1]), 
                 int(x2*DISP_MULT[0]), int(y2*DISP_MULT[1])))
         else:
