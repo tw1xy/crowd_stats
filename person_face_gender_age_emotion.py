@@ -69,7 +69,7 @@ while True:
     FRAME_COUNTER = FRAME_COUNTER + 1
     
 
-    image_for_result = frame 
+    image_for_result = frame.copy() 
     img = sf.pre_process_img(frame,PREPROCESS_DIMS)
 
     person_graph.queue_inference_with_fifo_elem(input_fifo_person,output_fifo_person,img,None)
@@ -87,9 +87,25 @@ while True:
         face_predictions, boxes = sf.process_prediction(face_output,PREPROCESS_DIMS_300,DISP_MULT_300)
         #print("Found {} face(s).".format(len(face_predictions)))
         img_out = sf.draw_output(face_predictions,image_for_result,DISP_MULT_300)
-        
-        
-    #img_out = img_out[50:90,:]
+        if boxes:
+            box = boxes[0]
+
+            cropped_image = frame[(box[1]):(box[3]),box[0]:box[2]]
+            
+            face_img = sf.pre_process_img_2(cropped_image,PREPROCESS_DIMS_227,ilsvrc_mean)
+                   
+            age_graph.queue_inference_with_fifo_elem(input_fifo_age,output_fifo_age,face_img,None)
+            age_output, user_obj = output_fifo_age.read_elem()
+            age = sf.process_age(age_output)
+
+            gender_graph.queue_inference_with_fifo_elem(input_fifo_gender,output_fifo_gender,face_img,None)
+            gender_output, user_obj = output_fifo_gender.read_elem()
+            gender = sf.process_gender(gender_output)
+
+
+            print("Age is {} and it's {} ".format(age,gender))
+ 
+    
     cv2.imshow('image',img_out)
 
 

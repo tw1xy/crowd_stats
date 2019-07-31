@@ -8,6 +8,8 @@ CLASSES = ("background", "aeroplane", "bicycle", "bird",
 "boat", "bottle", "bus", "car", "cat", "chair", "cow",
 "diningtable", "dog", "horse", "motorbike", "person",
 "pottedplant", "sheep", "sofa", "train", "tvmonitor")
+age_list=['(0, 2)','(4, 6)','(8, 12)','(15, 20)','(25, 32)','(38, 43)','(48, 53)','(60, 100)']
+gender_list=['Male','Female']
 
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
