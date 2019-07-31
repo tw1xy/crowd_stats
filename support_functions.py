@@ -114,6 +114,14 @@ def draw_output(predictions,image_for_result,DISP_MULT):
                 cv2.FONT_HERSHEY_SIMPLEX, 1, COLORS[pred_class], 2)
     return image_for_result
 
+def crop_image(prediction,image,DISP_MULT):
+    DISP_MULTIPLIER_X, DISP_MULTIPLIER_Y = DISP_MULT
+    for (i, pred) in enumerate(prediction):
+        (pred_class, pred_conf, pred_boxpts) = pred
+
+        (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
+
+
 def process_age(output):
     age_index = output.argmax()
     age = age_list[age_index]
