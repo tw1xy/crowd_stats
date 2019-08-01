@@ -126,13 +126,15 @@ def crop_image(prediction,image,DISP_MULT):
 
 def process_age(output):
     age_index = output.argmax()
+    prob = output[age_index]
     age = age_list[age_index]
-    return age
+    return age, prob
 
 def process_gender(output):
     gender_index = output.argmax()
+    prob = output[gender_index]
     gender = gender_list[gender_index]
-    return gender
+    return gender, prob
 
 def pre_process_img(img,PREPROCESS_DIMS):
     #USE WITH MOBILE_SSD (many classes, person on)

@@ -89,30 +89,36 @@ while True:
         img_out = sf.draw_output(face_predictions,image_for_result,DISP_MULT_300)
         if boxes:
             box = boxes[0]
-
-            cropped_image = frame[(box[1]):(box[3]),box[0]:box[2]]
+            try:
+                cropped_image = frame[(box[1]-int(box[1]*0.3)):(box[3]+int(box[3]*0.3)),(box[0]-int(box[0]*0.2)):(box[2]+int(box[2]*0.2))]
+                cv2.imshow('cropped',cropped_image)
+            except:
+                cropped_image = frame[(box[1]):(box[3]),(box[0]):(box[2])]
+                cv2.imshow('cropped',cropped_image)
+            
             
             face_img = sf.pre_process_img_2(cropped_image,PREPROCESS_DIMS_227,ilsvrc_mean)
                    
             age_graph.queue_inference_with_fifo_elem(input_fifo_age,output_fifo_age,face_img,None)
             age_output, user_obj = output_fifo_age.read_elem()
-            age = sf.process_age(age_output)
+            age,age_prob = sf.process_age(age_output)
 
             gender_graph.queue_inference_with_fifo_elem(input_fifo_gender,output_fifo_gender,face_img,None)
             gender_output, user_obj = output_fifo_gender.read_elem()
-            gender = sf.process_gender(gender_output)
+            gender, gender_prob = sf.process_gender(gender_output)
 
 
-            print("Age is {} and it's {} ".format(age,gender))
+            print("Age is {} ({:.1f}%) and it's {} ({:.1f}%) ".format(age,age_prob*100,gender,gender_prob*100))
  
     
     cv2.imshow('image',img_out)
+    
 
 
 
 
     key = cv2.waitKey(1) & 0xFF
-    if key == ord("q") or FRAME_COUNTER == 500:
+    if key == ord("q"):
         break
 
 
