@@ -8,7 +8,6 @@ import sys
 
 import support_functions as sf
 
-PREPROCESS_DIMS = (300, 300)
 
 PERSON_GRAPH = 'graphs/g_300' #300
 FACE_GRAPH = 'graphs/ssd-face' #300
@@ -70,7 +69,7 @@ while True:
     
 
     image_for_result = frame.copy() 
-    img = sf.pre_process_img(frame,PREPROCESS_DIMS)
+    img = sf.pre_process_img(frame,PREPROCESS_DIMS_300)
 
     person_graph.queue_inference_with_fifo_elem(input_fifo_person,output_fifo_person,img,None)
     person_output, user_obj = output_fifo_person.read_elem()
@@ -80,7 +79,7 @@ while True:
     img_out= sf.draw_output(person_predictions,image_for_result,DISP_MULT_300)
     #print(person_predictions[0][2])
     if len(person_predictions):
-        #then serach faces
+        #then search faces
         face_graph.queue_inference_with_fifo_elem(input_fifo_face,output_fifo_face,img,None)
         face_output, user_obj = output_fifo_face.read_elem()
 
@@ -124,6 +123,8 @@ while True:
 
 print("Done {} frames averaging {:.1f} FPS or {:.3f} seconds per frame. Total time: {:.1f} s".format(FRAME_COUNTER,FRAME_COUNTER/(time.time()-start_time),(time.time()-start_time)/FRAME_COUNTER,time.time()-start_time))
 #destroy all to close
+cap.release()
+
 input_fifo_person.destroy()
 output_fifo_person.destroy()
 person_graph.destroy()
