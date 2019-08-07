@@ -10,6 +10,8 @@ TRACKING PEOPLE: https://www.di.ens.fr/willow/pdfscurrent/rodriguez11b.pdf
 
     http://www8.cs.umu.se/education/examina/Rapporter/SannaAgrenFinal.pdf
 
+    KALMAN FILTER: https://arxiv.org/pdf/1204.0375.pdf
+
 
 VIDEO OUT to webPAGE: https://github.com/PiSimo/PiCamNN    
 
