@@ -69,6 +69,7 @@ ct = CentroidTracker()
 #Inicialize data_storage
 dt = Data_support.AllData()
 
+start_time = time.time()
 FRAME_COUNTER = 0
 while True:
     ret, frame = cap.read()
@@ -162,8 +163,6 @@ while True:
             gender_is = "None"
             
 
-
-
         text = "ID:{} Age:{} Gender: {}".format(objectID, age_is, gender_is)
         cv2.putText(img_out, text, (int(centroid[0] - 10), int(centroid[1] - 10)),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -177,6 +176,10 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         break
+
+print("Done {} frames averaging {:.1f} FPS or {:.3f} seconds per frame. Total time: {:.1f} s".format(FRAME_COUNTER,FRAME_COUNTER/(time.time()-start_time),(time.time()-start_time)/FRAME_COUNTER,time.time()-start_time))
+
+cap.release()
 
 input_fifo_person.destroy()
 output_fifo_person.destroy()
