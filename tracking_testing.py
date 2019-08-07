@@ -33,7 +33,7 @@ if device_list:
     print("Found {} device(s) and connected to {}.".format(len(device_list),device))
 else:
     print("0 devices found, please make sure the NCS is connected. Exiting...")
-    sys.exit()
+    os.sys.exit()
 
 #ALLOCATING GRAPHS
 with open(PERSON_GRAPH, mode='rb') as f: person_graph_buffer = f.read()
@@ -92,9 +92,16 @@ while True:
     #boxes_p = sf.person_boxes_only(predictions)
     #TRACKING STARTS HERE
     people = ct.update(boxes_person)
+    
+    #check if all faces have age/gender
+    for person in list(people.keys()):
+        count = 0
+        if ct.age(person):
+            count += 1      
 
-    if len(person_predictions):
+    if len(person_predictions) and not count == len(list(people.keys())):
         #then search faces
+        print("searching faces")
         face_graph.queue_inference_with_fifo_elem(input_fifo_face,output_fifo_face,img,None)
         face_output, user_obj = output_fifo_face.read_elem()
 
@@ -131,7 +138,7 @@ while True:
         if not ct.age(objectID) and ct.face(objectID):
             
             box_is = ct.face(objectID)
-            print(box_is)
+            
             try:
                 cropped_image = frame[(box_is[1]-int(box_is[1]*0.3)):(box_is[3]+int(box_is[3]*0.3)),(box_is[0]-int(box_is[0]*0.2)):(box_is[2]+int(box_is[2]*0.2))]
                 cv2.imshow('face',cropped_image)
