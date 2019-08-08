@@ -102,6 +102,7 @@ while True:
     if len(person_predictions) and not count == len(list(people.keys())):
         #then search faces
         print("searching faces")
+        print("N_persons: {}; N_faces: {}; N_ages: {}".format(len(person_predictions),len(list(people.keys())),count))
         face_graph.queue_inference_with_fifo_elem(input_fifo_face,output_fifo_face,img,None)
         face_output, user_obj = output_fifo_face.read_elem()
 
@@ -111,7 +112,7 @@ while True:
     for (objectID, centroid) in people.items():
         
 
-        if ct.person(objectID):
+        if ct.person(objectID) and ct.age(objectID) and ct.gender(objectID):
             person_is = ct.person(objectID)
         else:
             print("Catching person_box for ID {}".format(objectID))
@@ -121,7 +122,7 @@ while True:
                 else:
                     print("No person box for ID {}".format(objectID))
         
-        if ct.face(objectID):
+        if ct.face(objectID) and ct.age(objectID) and ct.gender(objectID):
             ct.face(objectID)
         else:
             for boxx in boxes_faces:
