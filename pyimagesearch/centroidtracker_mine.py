@@ -53,6 +53,11 @@ class CentroidTracker():
 		del self.objects[objectID]
 		del self.disappeared[objectID]
 
+		del self.object_person[objectID]
+		del self.object_face[objectID]
+		del self.object_age[objectID]
+		del self.object_gender[objectID]
+
 	def update(self, rects):
 
 		if len(rects) == 0:
