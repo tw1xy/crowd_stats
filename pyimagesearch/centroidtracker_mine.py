@@ -4,7 +4,7 @@ from collections import OrderedDict
 import numpy as np
 
 class CentroidTracker():
-	def __init__(self, maxDisappeared=40):
+	def __init__(self, maxDisappeared=10):
 		self.nextObjectID = 0
 		self.objects_all = OrderedDict()
 		self.objects = OrderedDict()
@@ -52,11 +52,13 @@ class CentroidTracker():
 	def deregister(self, objectID):
 		del self.objects[objectID]
 		del self.disappeared[objectID]
-
-		del self.object_person[objectID]
-		del self.object_face[objectID]
-		del self.object_age[objectID]
-		del self.object_gender[objectID]
+		try:		
+			del self.object_person[objectID]
+			del self.object_face[objectID]
+			del self.object_age[objectID]
+			del self.object_gender[objectID]
+		except:
+			pass
 
 	def update(self, rects):
 

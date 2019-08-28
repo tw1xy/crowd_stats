@@ -23,6 +23,8 @@ GENDER_GRAPH_LIST = ['Male','Female']
 PREPROCESS_DIMS_300 = (300, 300)
 PREPROCESS_DIMS_227 = (227, 227)
 
+PERCENTAGE = 0.2
+
 ilsvrc_mean = np.load('graphs/age_gender_mean.npy').mean(1).mean(1) #loading the mean file
 
 #OPEN DEVICE
@@ -141,7 +143,7 @@ while True:
             box_is = ct.face(objectID)
             
             try:
-                cropped_image = frame[(box_is[1]-int(box_is[1]*0.3)):(box_is[3]+int(box_is[3]*0.3)),(box_is[0]-int(box_is[0]*0.2)):(box_is[2]+int(box_is[2]*0.2))]
+                cropped_image = frame[(box_is[1]-int(box_is[1]*PERCENTAGE)):(box_is[3]+int(box_is[3]*PERCENTAGE)),(box_is[0]-int(box_is[0]*PERCENTAGE)):(box_is[2]+int(box_is[2]*PERCENTAGE))]
                 cv2.imshow('face',cropped_image)
             except:
                 cropped_image = frame[(box_is[1]):(box_is[3]),(box_is[0]):(box_is[2])]
