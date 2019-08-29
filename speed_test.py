@@ -50,6 +50,9 @@ if mode == "NCS":
         print("0 devices found, please make sure the NCS is connected. Exiting...")
         os.sys.exit()
 
+    thermal_stats = device.get_option(mvnc.DeviceOption.RO_THERMAL_STATS)
+    print("NCS device temps: ", thermal_stats)
+
     #ALLOCATING GRAPHS
     with open(PERSON_GRAPH, mode='rb') as f: person_graph_buffer = f.read()
     person_graph = mvnc.Graph('person_graph')
@@ -74,7 +77,7 @@ if mode == "NCS":
 
 #ret, frame = cap.read()
 
-frame = cv2.imread('images/5.jpg')
+frame = cv2.imread('images/tiago.jpg')
 
 print("Camera is ON.")
 
@@ -279,56 +282,59 @@ while True:
 print("Done {} frames in {:.3f} seconds or {:.1f} FPS, {:.1f} ms per image".format(FRAME_COUNTER,(time.time()-start_time),FRAME_COUNTER/(time.time()-start_time),(1000*(time.time()-start_time)/FRAME_COUNTER)))
 
 captur_time_ = sum(captur_time,0)/len(captur_time)
-print("Capturing time: {:.1f} ms".format(captur_time_*1000))
+print("Capturing time: {:.1f} ms; Done {} times".format(captur_time_*1000,len(captur_time)))
 
 proc_time_ = sum(processing_time,0)/len(processing_time)
-print("Processig time(Rsize and normalization): {:.1f} ms".format(proc_time_*1000))
+print("Processig time(Rsize and normalization): {:.1f} ms; Done {} times".format(proc_time_*1000,len(processing_time)))
 
 inf1_time_ = sum(inf1_time,0)/len(inf1_time)
-print("People inference time: {:.1f} ms".format(inf1_time_*1000))
+print("People inference time: {:.1f} ms; Done {} times".format(inf1_time_*1000,len(inf1_time)))
 
 proc_inference_time_ = sum(proc_inference_time,0)/len(proc_inference_time)
-print("Preocessing inference time: {:.1f} ms".format(proc_inference_time_*1000))
+print("Preocessing inference time: {:.1f} ms; Done {} times".format(proc_inference_time_*1000,len(proc_inference_time)))
 
 drawi_time_ = sum(drawi_time,0)/len(drawi_time)
-print("Drawing time_1: {:.1f} ms".format(drawi_time_*1000))
+print("Drawing time_1: {:.1f} ms; Done {} times".format(drawi_time_*1000,len(drawi_time)))
 
 track_time_ = sum(track_time,0)/len(track_time)
-print("Tracking time: {:.1f} ms".format(track_time_*1000))
+print("Tracking time: {:.1f} ms; Done {} times".format(track_time_*1000,len(track_time)))
 
 face_time_ = sum(face_time,0)/len(face_time)
-print("Face inference time: {:.1f} ms".format(face_time_*1000))
+print("Face inference time: {:.1f} ms; Done {} times".format(face_time_*1000,len(face_time)))
 
 proc_inference_time_2_ = sum(proc_inference_time_2,0)/len(proc_inference_time_2)
-print("Processig inference time 2: {:.1f} ms".format(proc_inference_time_2_*1000))
+print("Processig inference time 2: {:.1f} ms; Done {} times".format(proc_inference_time_2_*1000,len(proc_inference_time_2)))
 
 catch_box_for_ID_time_ = sum(catch_box_for_ID_time,0)/len(catch_box_for_ID_time)
-print("Catch box for ID time: {:.1f} ms".format(catch_box_for_ID_time_*1000))
+print("Catch box for ID time: {:.1f} ms; Done {} times".format(catch_box_for_ID_time_*1000,len(catch_box_for_ID_time)))
 
 catch_face_for_ID_time_ = sum(catch_face_for_ID_time,0)/len(catch_face_for_ID_time)
-print("Catch face for ID time: {:.1f} ms".format(catch_face_for_ID_time_*1000))
+print("Catch face for ID time: {:.1f} ms; Done {} times".format(catch_face_for_ID_time_*1000,len(catch_face_for_ID_time)))
 
 crop_and_process_time_ = sum(crop_and_process_time,0)/len(crop_and_process_time)
-print("Crop face and process time: {:.1f} ms".format(crop_and_process_time_*1000))
+print("Crop face and process time: {:.1f} ms; Done {} times".format(crop_and_process_time_*1000,len(crop_and_process_time)))
 
 age_inference_time_ = sum(age_inference_time,0)/len(age_inference_time)
-print("Age inference time: {:.1f} ms".format(age_inference_time_*1000))
+print("Age inference time: {:.1f} ms; Done {} times".format(age_inference_time_*1000,len(age_inference_time)))
 
 age_process_time_ = sum(age_process_time,0)/len(age_process_time)
-print("Age process time: {:.1f} ms".format(age_process_time_*1000))
+print("Age process time: {:.1f} ms; Done {} times".format(age_process_time_*1000,len(age_process_time)))
 
 gender_inference_time_ = sum(gender_inference_time,0)/len(gender_inference_time)
-print("Gender inference time: {:.1f} ms".format(gender_inference_time_*1000))
+print("Gender inference time: {:.1f} ms; Done {} times".format(gender_inference_time_*1000,len(gender_inference_time)))
 
 gender_process_time_ = sum(gender_process_time,0)/len(gender_process_time)
-print("Gender process time: {:.1f} ms".format(gender_process_time_*1000))
+print("Gender process time: {:.1f} ms; Done {} times".format(gender_process_time_*1000,len(gender_process_time)))
 
 drawi_time2_ = sum(drawi_time2,0)/len(drawi_time2)
-print("Last drawing time: {:.1f} ms".format(drawi_time2_*1000))
+print("Last drawing time: {:.1f} ms; Done {} times".format(drawi_time2_*1000,len(drawi_time2)))
 
 #cap.release()
 
 if mode == "NCS":
+    thermal_stats = device.get_option(mvnc.DeviceOption.RO_THERMAL_STATS)
+    print("NCS device temps: ", thermal_stats)
+
     input_fifo_person.destroy()
     output_fifo_person.destroy()
     person_graph.destroy()
