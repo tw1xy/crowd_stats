@@ -45,7 +45,7 @@ def process_prediction(output,image_shape,DISP_MULT):
         prediction = (pred_class, pred_conf, pred_boxpts)
         
         
-        if pred_conf > 0.6 and pred_class == 15 or pred_class == 1: #only people output and faces
+        if pred_conf > 0.8 and pred_class == 15 or pred_class == 1: #only people output and faces
             predictions.append(prediction)
             
             boxes_only.append((int(x1*DISP_MULT[0]), int(y1*DISP_MULT[1]), 
@@ -55,15 +55,6 @@ def process_prediction(output,image_shape,DISP_MULT):
         
     return predictions, boxes_only
 
-def person_boxes_only(predictions):
-    boxes_only = []
-    for (i, pred) in enumerate(predictions):
-        (pred_class, pred_conf, pred_boxpts) = pred
-        if pred_conf > 0.7 and pred_class == 15:
-            boxes_only.append(pred_boxpts[0]+pred_boxpts[1])
-        else:
-            pass
-    return boxes_only
 
 def draw_boxes(predictions,image_for_result,DISP_MULT):
     DISP_MULTIPLIER_X, DISP_MULTIPLIER_Y = DISP_MULT
@@ -75,8 +66,8 @@ def draw_boxes(predictions,image_for_result,DISP_MULT):
             #print("[INFO] Prediction #{}: class={}, confidence={}, "
              #   "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
 
-            label = "{}: {:.2f}%".format(CLASSES[pred_class],
-                pred_conf * 100)
+            #label = "{}: {:.2f}%".format(CLASSES[pred_class],
+             #   pred_conf * 100)
 
             (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
             ptA = (int(ptA[0] * DISP_MULTIPLIER_X), int(ptA[1] * DISP_MULTIPLIER_Y))
@@ -101,7 +92,7 @@ def draw_output(predictions,image_for_result,DISP_MULT):
             # print("[INFO] Prediction #{}: class={}, confidence={}, "
             #     "boxpoints={}".format(i, CLASSES[pred_class], pred_conf,pred_boxpts))
 
-            label = "{}: {:.2f}%".format(CLASSES[pred_class],
+            label = "{:.1f}%".format(
                 pred_conf * 100)
 
             (ptA, ptB) = (pred_boxpts[0], pred_boxpts[1])
