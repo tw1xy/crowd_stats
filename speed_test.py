@@ -161,6 +161,7 @@ while True:
         img_out= sf.draw_output(face_predictions,image_for_result,DISP_MULT_300)
 
     for (objectID, centroid) in people.items():
+        break
         
 
         if ct.person(objectID) and ct.age(objectID) and ct.gender(objectID) and False:
@@ -272,9 +273,11 @@ while True:
     proc_inference_time.append(time_6 - time_5)
     drawi_time.append(time_8 - time_7)
     track_time.append(time_10 - time_9)
-    face_time.append(time_12 - time_11)
-    proc_inference_time_2.append(time_14 - time_13)
-
+    try:    
+        face_time.append(time_12 - time_11)
+        proc_inference_time_2.append(time_14 - time_13)
+    except:
+        pass
     key = cv2.waitKey(1) & 0xFF
     if FRAME_COUNTER == int(frames_limit) or key == ord("q"):
         break
@@ -298,36 +301,39 @@ print("Drawing time_1: {:.1f} ms; Done {} times".format(drawi_time_*1000,len(dra
 
 track_time_ = sum(track_time,0)/len(track_time)
 print("Tracking time: {:.1f} ms; Done {} times".format(track_time_*1000,len(track_time)))
+try:
+    face_time_ = sum(face_time,0)/len(face_time)
+    print("Face inference time: {:.1f} ms; Done {} times".format(face_time_*1000,len(face_time)))
 
-face_time_ = sum(face_time,0)/len(face_time)
-print("Face inference time: {:.1f} ms; Done {} times".format(face_time_*1000,len(face_time)))
+    proc_inference_time_2_ = sum(proc_inference_time_2,0)/len(proc_inference_time_2)
+    print("Processig inference time 2: {:.1f} ms; Done {} times".format(proc_inference_time_2_*1000,len(proc_inference_time_2)))
 
-proc_inference_time_2_ = sum(proc_inference_time_2,0)/len(proc_inference_time_2)
-print("Processig inference time 2: {:.1f} ms; Done {} times".format(proc_inference_time_2_*1000,len(proc_inference_time_2)))
 
-catch_box_for_ID_time_ = sum(catch_box_for_ID_time,0)/len(catch_box_for_ID_time)
-print("Catch box for ID time: {:.1f} ms; Done {} times".format(catch_box_for_ID_time_*1000,len(catch_box_for_ID_time)))
+    catch_box_for_ID_time_ = sum(catch_box_for_ID_time,0)/len(catch_box_for_ID_time)
+    print("Catch box for ID time: {:.1f} ms; Done {} times".format(catch_box_for_ID_time_*1000,len(catch_box_for_ID_time)))
 
-catch_face_for_ID_time_ = sum(catch_face_for_ID_time,0)/len(catch_face_for_ID_time)
-print("Catch face for ID time: {:.1f} ms; Done {} times".format(catch_face_for_ID_time_*1000,len(catch_face_for_ID_time)))
+    catch_face_for_ID_time_ = sum(catch_face_for_ID_time,0)/len(catch_face_for_ID_time)
+    print("Catch face for ID time: {:.1f} ms; Done {} times".format(catch_face_for_ID_time_*1000,len(catch_face_for_ID_time)))
 
-crop_and_process_time_ = sum(crop_and_process_time,0)/len(crop_and_process_time)
-print("Crop face and process time: {:.1f} ms; Done {} times".format(crop_and_process_time_*1000,len(crop_and_process_time)))
+    crop_and_process_time_ = sum(crop_and_process_time,0)/len(crop_and_process_time)
+    print("Crop face and process time: {:.1f} ms; Done {} times".format(crop_and_process_time_*1000,len(crop_and_process_time)))
 
-age_inference_time_ = sum(age_inference_time,0)/len(age_inference_time)
-print("Age inference time: {:.1f} ms; Done {} times".format(age_inference_time_*1000,len(age_inference_time)))
+    age_inference_time_ = sum(age_inference_time,0)/len(age_inference_time)
+    print("Age inference time: {:.1f} ms; Done {} times".format(age_inference_time_*1000,len(age_inference_time)))
 
-age_process_time_ = sum(age_process_time,0)/len(age_process_time)
-print("Age process time: {:.1f} ms; Done {} times".format(age_process_time_*1000,len(age_process_time)))
+    age_process_time_ = sum(age_process_time,0)/len(age_process_time)
+    print("Age process time: {:.1f} ms; Done {} times".format(age_process_time_*1000,len(age_process_time)))
 
-gender_inference_time_ = sum(gender_inference_time,0)/len(gender_inference_time)
-print("Gender inference time: {:.1f} ms; Done {} times".format(gender_inference_time_*1000,len(gender_inference_time)))
+    gender_inference_time_ = sum(gender_inference_time,0)/len(gender_inference_time)
+    print("Gender inference time: {:.1f} ms; Done {} times".format(gender_inference_time_*1000,len(gender_inference_time)))
 
-gender_process_time_ = sum(gender_process_time,0)/len(gender_process_time)
-print("Gender process time: {:.1f} ms; Done {} times".format(gender_process_time_*1000,len(gender_process_time)))
+    gender_process_time_ = sum(gender_process_time,0)/len(gender_process_time)
+    print("Gender process time: {:.1f} ms; Done {} times".format(gender_process_time_*1000,len(gender_process_time)))
 
-drawi_time2_ = sum(drawi_time2,0)/len(drawi_time2)
-print("Last drawing time: {:.1f} ms; Done {} times".format(drawi_time2_*1000,len(drawi_time2)))
+    drawi_time2_ = sum(drawi_time2,0)/len(drawi_time2)
+    print("Last drawing time: {:.1f} ms; Done {} times".format(drawi_time2_*1000,len(drawi_time2)))
+except:
+    pass
 
 #cap.release()
 
