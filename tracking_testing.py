@@ -57,7 +57,6 @@ input_fifo_gender, output_fifo_gender = gender_graph.allocate_with_fifos(device,
 print("Graphs allocated.")
 
 cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture("images/10min18.mp4")
 ret, frame = cap.read()
 print("Camera is ON.")
 
