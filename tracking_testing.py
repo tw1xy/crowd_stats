@@ -5,11 +5,7 @@ import os
 import time
 import numpy as np
 
-from scipy.spatial import distance as dist
-from collections import OrderedDict
-
-from pyimagesearch.centroidtracker_mine import CentroidTracker
-import data as Data_support
+from centroidtracker_mine import CentroidTracker
 import support_functions as sf
 
 PERSON_GRAPH = 'graphs/g_300' #300
@@ -61,7 +57,6 @@ cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 print("Camera is ON.")
 
-
 #IN ORDER TO DISPLAY IMAGE ON THE INPUT RESOLUTION
 DISPLAY_DIMS = (frame.shape[0], frame.shape[1])
 DISP_MULTIPLIER_Y_300 = (DISPLAY_DIMS[0] / PREPROCESS_DIMS_300[0])
@@ -70,8 +65,6 @@ DISP_MULT_300 = DISP_MULTIPLIER_X_300, DISP_MULTIPLIER_Y_300
 
 #Initializing tracker
 ct = CentroidTracker()
-#Inicialize data_storage
-dt = Data_support.AllData()
 
 start_time = time.time()
 FRAME_COUNTER = 0
