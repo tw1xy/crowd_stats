@@ -1,29 +1,15 @@
 # crowd_stats
 
-This software is intended to do crowd detection and track number of people that are in fornt of camera and return teir age, gender, emotional state and if they are paying attention to the advertising or not.
-
+This software is intended to do crowd detection and track number of people that are in front of camera and return teir age and gender.
 At this stage the system detects people.
 
-The main hardware is  RaspPi3 and camera + Movidius Neural Stick and it shoud work in real time.
+The main hardware is  Rasppberry Pi3, any camera (via USB ou CSI) + Movidius Neural Compute Stick and it work in real time. Also you can use any cumputer with linux and camera along with Movidius Neural Compute Stick
 
-# In order to run, install ncsdk_v2 api on your machine and run test_api_v2.py with python3
+# In order to run, install ncsdk_v2 api on your machine and run test_tracking.py
 
-(!) throw some videos to videos folder in order to run another tests.
-
-
-TO-DO list:
-SOFTWARE:
-1. add more layres of detection, i.e. more graphs to predict gender, age...
-2. track people, give them id's
-3. start writing the state of the art
-4. Write a document
- 
-
-HARDWARE:
-1. set up 3A power converter (DC12V3A to DCV3A)
-2. make a box
+Please note that libraries like OpenCV, NumPy and SciPy must be installed.
 
 
-!REQUISITES!
-PC: ubuntu 16.04 with 4.15.0-54-generic kernel works fine
-i5 8300H with 1050 with 418.56 graphic drivers with CUDA Toolkit 10.1.168
+
+
+
